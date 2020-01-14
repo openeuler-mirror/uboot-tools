@@ -1,6 +1,6 @@
 Name:      	uboot-tools
 Version:   	2018.09
-Release:   	4
+Release:   	5
 Summary:   	tools for U-Boot
 License:   	GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 
@@ -102,6 +102,11 @@ mkdir builds
 for board in $(cat %{_arch}-boards)
 do
   echo "Building board: $board"
+  if [[ " ${rk3399[*]} " == *" $board "* ]]; then
+    echo "Board: $board  skipping"
+    continue
+  fi
+
   mkdir builds/$(echo $board)/
   sun50i=(a64-olinuxino bananapi_m64 libretech_all_h3_cc_h5 nanopi_neo2 nanopi_neo_plus2 orangepi_pc2 orangepi_prime orangepi_win orangepi_zero_plus orangepi_zero_plus2 pine64_plus sopine_baseboard)
   if [[ " ${sun50i[*]} " == *" $board "* ]]; then
@@ -288,6 +293,12 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1.gz
 
 %changelog
+* Tue Jan 14 2020 openEuler Buildteam <buildteam@openeuler.org> - 2018.09-5
+- Type:bugfix
+- Id:NA
+- SUG:NA
+- DESC:close 3399
+
 * Fri Oct 25 2019 openEuler Buildteam <buildteam@openeuler.org> - 2018.09-4
 - Type:bugfix
 - Id:NA
