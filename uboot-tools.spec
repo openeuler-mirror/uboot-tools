@@ -1,33 +1,23 @@
 Name:      	uboot-tools
 Version:   	2018.09
-Release:   	5
+Release:   	6
 Summary:   	tools for U-Boot
 License:   	GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
-
 URL:       	http://www.denx.de/wiki/U-Boot
 Source0:   	ftp://ftp.denx.de/pub/u-boot/u-boot-%{version}%{?candidate:-%{candidate}}.tar.bz2
-
 Source1:   	arm-boards
 Source2:   	arm-chromebooks
 Source3:   	aarch64-boards
 Source4:   	aarch64-chromebooks
 Source5:   	10-devicetree.install
-
-Patch1:    	uefi-use-specific-path-name.patch
-
-Patch2:    	uefi-distro-load-FDT-from-any-partition-on-boot-device.patch
-Patch3:    	usb-kbd-fixes.patch
-
-Patch10:   	rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
-Patch11:   	rockchip-make_fit_atf-fix-warning-unit_address_vs_reg.patch
-Patch12:   	rockchip-make_fit_atf-use-elf-entry-point.patch
-Patch13:   	rk3399-Rock960-board-support.patch
-Patch14:   	dragonboard-fixes.patch
-Patch15:   	tegra186-jetson-tx2-disable-onboard-emmc.patch
-Patch16:   	tegra-efi_loader-simplify-ifdefs.patch
-Patch17:   	tegra-TXx-Add-CONFIG_EFI_LOADER_BOUNCE_BUFFER.patch
-Patch18:   	tegra-fix-tx1.patch
-Patch19:   	sunxi-DT-A64-add-Pine64-LTS-support.patch
+Patch0001:    	usb-kbd-fixes.patch
+Patch0002:   	rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
+Patch0003:   	rockchip-make_fit_atf-fix-warning-unit_address_vs_reg.patch
+Patch0004:   	rockchip-make_fit_atf-use-elf-entry-point.patch
+Patch0005:   	rk3399-Rock960-board-support.patch
+Patch0006:   	dragonboard-fixes.patch
+Patch0007:   	tegra-efi_loader-simplify-ifdefs.patch
+Patch0008:   	sunxi-DT-A64-add-Pine64-LTS-support.patch
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel 
 BuildRequires:  python-unversioned-command python2-devel python2-setuptools
@@ -293,6 +283,12 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1.gz
 
 %changelog
+* Fri Jan 17 2020 Tianfei <tianfei16@huawei.com> - 2018.09-6
+- Type:bugfix
+- ID:NA
+- SUG:NA
+- DESC: delete patch
+
 * Tue Jan 14 2020 openEuler Buildteam <buildteam@openeuler.org> - 2018.09-5
 - Type:bugfix
 - Id:NA
