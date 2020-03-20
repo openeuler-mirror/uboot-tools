@@ -1,6 +1,6 @@
 Name:           uboot-tools
 Version:        2018.09
-Release:        7
+Release:        8
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
@@ -19,7 +19,7 @@ Patch0006:      dragonboard-fixes.patch
 Patch0007:      tegra-efi_loader-simplify-ifdefs.patch
 Patch0008:      sunxi-DT-A64-add-Pine64-LTS-support.patch
 
-BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel 
+BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel gdb
 BuildRequires:  python-unversioned-command python2-devel python2-setuptools
 BuildRequires:  python2-libfdt python2-pyelftools SDL-devel swig
 # this required when /usr/bin/python link to python3
@@ -288,6 +288,9 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1.gz
 
 %changelog
+* Fri Mar 20 2020 songnannan <songnannan2@huawei.com> - 2018.09-8
+- add gdb in buildrequires
+
 * Sat Feb 29 2020 hexiujun <hexiujun1@huawei.com> - 2018.09-7
 - Type:enhancement
 - ID:NA
