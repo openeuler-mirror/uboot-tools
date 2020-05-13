@@ -288,7 +288,7 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1.gz
 
 %changelog
-* Fri Mar 20 2020 songnannan <songnannan2@huawei.com> - 2018.09-9
+* Wed May 13 2020 songnannan <songnannan2@huawei.com> - 2018.09-9
 - change the python2-libfdt to python3-libfdt in buildrequires
 
 * Fri Mar 20 2020 songnannan <songnannan2@huawei.com> - 2018.09-8
