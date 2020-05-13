@@ -1,6 +1,6 @@
 Name:           uboot-tools
 Version:        2018.09
-Release:        8
+Release:        9
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
@@ -21,7 +21,7 @@ Patch0008:      sunxi-DT-A64-add-Pine64-LTS-support.patch
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel gdb
 BuildRequires:  python-unversioned-command python2-devel python2-setuptools
-BuildRequires:  python2-libfdt python2-pyelftools SDL-devel swig
+BuildRequires:  python3-libfdt python2-pyelftools SDL-devel swig
 # this required when /usr/bin/python link to python3
 BuildRequires:  python3-devel
 %ifarch %{arm} aarch64
@@ -288,6 +288,9 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1.gz
 
 %changelog
+* Wed May 13 2020 songnannan <songnannan2@huawei.com> - 2018.09-9
+- change the python2-libfdt to python3-libfdt in buildrequires
+
 * Fri Mar 20 2020 songnannan <songnannan2@huawei.com> - 2018.09-8
 - add gdb in buildrequires
 
