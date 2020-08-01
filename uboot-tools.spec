@@ -19,7 +19,6 @@ Patch1:    uefi-distro-load-FDT-from-any-partition-on-boot-device.patch
 # Board fixes and enablement
 Patch4:    usb-kbd-fixes.patch
 Patch5:    dragonboard-fixes.patch
-#Patch7:    tegra-efi_loader-simplify-ifdefs.patch
 # Tegra improvements
 Patch10:   arm-tegra-define-fdtfile-option-for-distro-boot.patch
 Patch11:   arm-add-BOOTENV_EFI_SET_FDTFILE_FALLBACK-for-tegra186-be.patch

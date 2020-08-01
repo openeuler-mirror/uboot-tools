@@ -384,7 +384,7 @@ index 0000000000..e2d284e5ac
 +	.of_match = raspberrypi_reset_ids,
 +	.ops = &raspberrypi_reset_ops,
 +};
-+
+
 diff --git a/include/dt-bindings/reset/raspberrypi,firmware-reset.h b/include/dt-bindings/reset/raspberrypi,firmware-reset.h
 new file mode 100644
 index 0000000000..1a4f4c7927
