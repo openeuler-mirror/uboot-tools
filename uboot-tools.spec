@@ -1,4 +1,5 @@
 %global _default_patch_fuzz 2
+
 Name:           uboot-tools
 Version:        2020.07
 Release:        1
@@ -12,29 +13,28 @@ Source3:        aarch64-boards
 Source4:        aarch64-chromebooks
 Source5:        10-devicetree.install
 
-Patch1:    uefi-distro-load-FDT-from-any-partition-on-boot-device.patch
+Patch0001:      uefi-distro-load-FDT-from-any-partition-on-boot-device.patch
 # Board fixes and enablement
-Patch4:    usb-kbd-fixes.patch
-Patch5:    dragonboard-fixes.patch
+Patch0002:      usb-kbd-fixes.patch
+Patch0003:      dragonboard-fixes.patch
 # Tegra improvements
-Patch10:   arm-tegra-define-fdtfile-option-for-distro-boot.patch
-Patch11:   arm-add-BOOTENV_EFI_SET_FDTFILE_FALLBACK-for-tegra186-be.patch
+Patch0004:      arm-tegra-define-fdtfile-option-for-distro-boot.patch
+Patch0005:      arm-add-BOOTENV_EFI_SET_FDTFILE_FALLBACK-for-tegra186-be.patch
 # AllWinner improvements
-Patch12:   AllWinner-Pine64-bits.patch
+Patch0006:      AllWinner-Pine64-bits.patch
 # Rockchips improvements
-Patch13:   arm-rk3399-enable-rng-on-rock960-and-firefly3399.patch
-Patch14:   rockchip-Pinebook-Pro-Fixes.patch
+Patch0007:      arm-rk3399-enable-rng-on-rock960-and-firefly3399.patch
+Patch0008:      rockchip-Pinebook-Pro-Fixes.patch
 # RPi4
-Patch16:   USB-host-support-for-Raspberry-Pi-4-board-64-bit.patch
-Patch17:   usb-xhci-Load-Raspberry-Pi-4-VL805-s-firmware.patch
-Patch18:   rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
+Patch0009:      USB-host-support-for-Raspberry-Pi-4-board-64-bit.patch
+Patch0010:      rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel gdb
 BuildRequires:  python-unversioned-command python3-devel python3-setuptools
 BuildRequires:  python3-libfdt python3-pyelftools SDL-devel swig
 # this required when /usr/bin/python link to python3
 BuildRequires:  python3-devel
-%ifarch %{arm} aarch64
+%ifarch %{arm}  aarch64
 BuildRequires:  vboot-utils
 %endif
 %ifarch aarch64
