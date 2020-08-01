@@ -13,9 +13,6 @@ Source4:        aarch64-chromebooks
 Source5:        10-devicetree.install
 
 Patch1:    uefi-distro-load-FDT-from-any-partition-on-boot-device.patch
-# Needed due to issues with shim
-#Patch2:    uefi-use-Fedora-specific-path-name.patch
-
 # Board fixes and enablement
 Patch4:    usb-kbd-fixes.patch
 Patch5:    dragonboard-fixes.patch
@@ -31,7 +28,6 @@ Patch14:   rockchip-Pinebook-Pro-Fixes.patch
 Patch16:   USB-host-support-for-Raspberry-Pi-4-board-64-bit.patch
 Patch17:   usb-xhci-Load-Raspberry-Pi-4-VL805-s-firmware.patch
 Patch18:   rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
-
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel gdb
 BuildRequires:  python-unversioned-command python3-devel python3-setuptools
@@ -90,24 +86,9 @@ u-boot bootloader ELF images for use with qemu and other platforms
 %package_help
 
 %prep
-#%setup -q -n u-boot-%{version} -p1
 %autosetup -p1 -n u-boot-%{version}
 
-#git init
-#git config --global gc.auto 0
-#git config user.email "noone@example.com" 
-#git config user.name "no one" 
-#git add . 
-#git commit -a -q -m "%{version} baseline" 
-#git am %{patches} </dev/null 
-#git config --unset user.email 
-#git config --unset user.name 
-#rm -rf .git
-
 cp %SOURCE1 %SOURCE2 %SOURCE3 %SOURCE4 .
-
-# use python2 shebang explicitly
-#find . -name "*.py" -exec sed -i -r 's!/usr/bin/python(\s|$)!/usr/bin/python2\1!' {} \;
 
 %build
 mkdir builds
@@ -200,50 +181,6 @@ do
 done
 %endif
 
-#/////////////////////////////////////////
-%if 0
-%ifarch aarch64
-for board in $(cat %{_arch}-boards)
-do
-mkdir -p %{buildroot}%{_datadir}/uboot/$(echo $board)/
- for file in MLO SPL spl/arndale-spl.bin spl/origen-spl.bin spl/smdkv310-spl.bin u-boot.bin u-boot.dtb u-boot-dtb-tegra.bin u-boot.img u-boot.imx u-boot-nodtb-tegra.bin u-boot-spl.kwb u-boot-sunxi-with-spl.bin spl_sd.img spl_spi.img
- do
-  if [ -f builds/$(echo $board)/$(echo $file) ]; then
-    install -p -m 0644 builds/$(echo $board)/$(echo $file) %{buildroot}%{_datadir}/uboot/$(echo $board)/
-  fi
- done
-done
-%endif
-
-%ifarch %{arm}
-for board in vexpress_ca15_tc2 vexpress_ca9x4
-do
-mkdir -p %{buildroot}%{_datadir}/uboot/elf/$(echo $board)/
- for file in u-boot
- do
-  if [ -f builds/$(echo $board)/$(echo $file) ]; then
-    install -p -m 0644 builds/$(echo $board)/$(echo $file) %{buildroot}%{_datadir}/uboot/elf/$(echo $board)/
-  fi
- done
-done
-%endif
-
-%ifarch aarch64
-for board in $(cat %{_arch}-boards)
-do
-mkdir -p %{buildroot}%{_datadir}/uboot/elf/$(echo $board)/
- for file in u-boot
- do
-  if [ -f builds/$(echo $board)/$(echo $file) ]; then
-    install -p -m 0644 builds/$(echo $board)/$(echo $file) %{buildroot}%{_datadir}/uboot/elf/$(echo $board)/
-  fi
- done
-done
-%endif
-
-%endif
-#/////////////////////////////////////////
-
 for tool in bmp_logo dumpimage env/fw_printenv fit_check_sign fit_info gdb/gdbcont gdb/gdbsend gen_eth_addr gen_ethaddr_crc img2srec mkenvimage mkimage mksunxiboot ncb proftool sunxi-spl-image-builder ubsha1 xway-swap-bytes
 do
 install -p -m 0755 builds/tools/$tool %{buildroot}%{_bindir}
@@ -259,7 +196,6 @@ mkdir -p %{buildroot}/lib/kernel/install.d/
 install -p -m 0755 %{SOURCE5} %{buildroot}/lib/kernel/install.d/
 
 mkdir -p builds/docs
-#cp -p board/amlogic/odroid-c2/README builds/docs/README.odroid-c2
 cp -p board/hisilicon/hikey/README builds/docs/README.hikey
 cp -p board/hisilicon/hikey/README builds/docs/README.hikey
 cp -p board/Marvell/db-88f6820-gp/README builds/docs/README.mvebu-db-88f6820
@@ -287,20 +223,17 @@ cp -p board/warp7/README builds/docs/README.warp7
 %files -n uboot-images-armv8
 %defattr(-,root,root)
 %{_datadir}/uboot/*
-#%exclude %{_datadir}/uboot/elf
 %endif
 
 %ifarch %{arm}
 %files -n uboot-images-armv7
 %defattr(-,root,root)
 %{_datadir}/uboot/*
-#%exclude %{_datadir}/uboot/elf
 %endif
 
 %ifarch %{arm} aarch64
 %files -n uboot-images-elf
 %defattr(-,root,root)
-#%{_datadir}/uboot/elf/*
 %endif
 
 %files help
