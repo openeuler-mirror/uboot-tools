@@ -1,6 +1,8 @@
+%global _default_patch_fuzz 2
+
 Name:           uboot-tools
-Version:        2018.09
-Release:        9
+Version:        2020.07
+Release:        1
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
@@ -10,21 +12,29 @@ Source2:        arm-chromebooks
 Source3:        aarch64-boards
 Source4:        aarch64-chromebooks
 Source5:        10-devicetree.install
-Patch0001:      usb-kbd-fixes.patch
-Patch0002:      rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
-Patch0003:      rockchip-make_fit_atf-fix-warning-unit_address_vs_reg.patch
-Patch0004:      rockchip-make_fit_atf-use-elf-entry-point.patch
-Patch0005:      rk3399-Rock960-board-support.patch
-Patch0006:      dragonboard-fixes.patch
-Patch0007:      tegra-efi_loader-simplify-ifdefs.patch
-Patch0008:      sunxi-DT-A64-add-Pine64-LTS-support.patch
+
+Patch0001:      uefi-distro-load-FDT-from-any-partition-on-boot-device.patch
+# Board fixes and enablement
+Patch0002:      usb-kbd-fixes.patch
+Patch0003:      dragonboard-fixes.patch
+# Tegra improvements
+Patch0004:      arm-tegra-define-fdtfile-option-for-distro-boot.patch
+Patch0005:      arm-add-BOOTENV_EFI_SET_FDTFILE_FALLBACK-for-tegra186-be.patch
+# AllWinner improvements
+Patch0006:      AllWinner-Pine64-bits.patch
+# Rockchips improvements
+Patch0007:      arm-rk3399-enable-rng-on-rock960-and-firefly3399.patch
+Patch0008:      rockchip-Pinebook-Pro-Fixes.patch
+# RPi4
+Patch0009:      USB-host-support-for-Raspberry-Pi-4-board-64-bit.patch
+Patch0010:      rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel gdb
-BuildRequires:  python-unversioned-command python2-devel python2-setuptools
-BuildRequires:  python3-libfdt python2-pyelftools SDL-devel swig
+BuildRequires:  python-unversioned-command python3-devel python3-setuptools
+BuildRequires:  python3-libfdt python3-pyelftools SDL-devel swig
 # this required when /usr/bin/python link to python3
 BuildRequires:  python3-devel
-%ifarch %{arm} aarch64
+%ifarch %{arm}  aarch64
 BuildRequires:  vboot-utils
 %endif
 %ifarch aarch64
@@ -32,6 +42,10 @@ BuildRequires:  arm-trusted-firmware-armv8
 %endif
 
 Requires:       dtc systemd
+%ifarch aarch64 %{arm}
+Obsoletes:      uboot-images-elf < 2019.07
+Provides:       uboot-images-elf >= 2019.07
+%endif
 
 %description
 This package includes the mkimage program, which allows generation of U-Boot
@@ -62,8 +76,8 @@ u-boot bootloader images for armv7 boards
 %package     	-n uboot-images-elf
 Summary:     	u-boot bootloader images for armv7 boards
 Requires:    	uboot-tools
-Obsoletes:   	uboot-images-qemu
-Provides:    	uboot-images-qemu
+Obsoletes:   	uboot-images-qemu < %{version}-%{release}
+Provides:    	uboot-images-qemu = %{version}-%{release}
 
 %description 	-n uboot-images-elf
 u-boot bootloader ELF images for use with qemu and other platforms
@@ -72,23 +86,9 @@ u-boot bootloader ELF images for use with qemu and other platforms
 %package_help
 
 %prep
-%setup -q -n u-boot-%{version}
-
-git init
-git config --global gc.auto 0
-git config user.email "noone@example.com" 
-git config user.name "no one" 
-git add . 
-git commit -a -q -m "%{version} baseline" 
-git am %{patches} </dev/null 
-git config --unset user.email 
-git config --unset user.name 
-rm -rf .git
+%autosetup -p1 -n u-boot-%{version}
 
 cp %SOURCE1 %SOURCE2 %SOURCE3 %SOURCE4 .
-
-# use python2 shebang explicitly
-find . -name "*.py" -exec sed -i -r 's!/usr/bin/python(\s|$)!/usr/bin/python2\1!' {} \;
 
 %build
 mkdir builds
@@ -103,30 +103,29 @@ do
   fi
 
   mkdir builds/$(echo $board)/
-  sun50i=(a64-olinuxino bananapi_m64 libretech_all_h3_cc_h5 nanopi_neo2 nanopi_neo_plus2 orangepi_pc2 orangepi_prime orangepi_win orangepi_zero_plus orangepi_zero_plus2 pine64_plus sopine_baseboard)
+  sun50i=(a64-olinuxino amarula_a64_relic bananapi_m2_plus_h5  bananapi_m64 libretech_all_h3_cc_h5 nanopi_neo2 nanopi_neo_plus2 orangepi_pc2 orangepi_prime orangepi_win orangepi_zero_plus orangepi_zero_plus2 pine64-lts pine64_plus pinebook pinephone pinetab sopine_baseboard teres_i)
   if [[ " ${sun50i[*]} " == *" $board "* ]]; then
     echo "Board: $board using sun50i_a64"
     cp /usr/share/arm-trusted-firmware/sun50i_a64/* builds/$(echo $board)/
   fi
-  sun50i=(orangepi_one_plus pine_h64)
-  if [[ " ${sun50i[*]} " == *" $board "* ]]; then
+  sun50h6=(orangepi_lite2 orangepi_one_plus pine_h64)
+  if [[ " ${sun50h6[*]} " == *" $board "* ]]; then
     echo "Board: $board using sun50i_h6"
     cp /usr/share/arm-trusted-firmware/sun50i_h6/* builds/$(echo $board)/
   fi
-  rk3399=(evb-rk3399 firefly-rk3399 rock960-rk3399)
+    rk3328=(evb-rk3328 rock64-rk3328)
+  if [[ " ${rk3328[*]} " == *" $board "* ]]; then
+    echo "Board: $board using rk3328"
+    cp /usr/share/arm-trusted-firmware/rk3328/* builds/$(echo $board)/
+  fi
+  rk3399=(evb-rk3399 ficus-rk3399 khadas-edge-captain-rk3399 khadas-edge-v-rk3399 khadas-edge-rk3399 nanopc-t4-rk3399 nanopi-m4-rk3399 nanopi-neo4-rk3399 orangepi-rk3399 pinebook-pro-rk3399 puma-rk3399 rock960-rk3399 rock-pi-4-rk3399 rockpro64-rk3399 roc-pc-rk3399)
   if [[ " ${rk3399[*]} " == *" $board "* ]]; then
     echo "Board: $board using rk3399"
     cp /usr/share/arm-trusted-firmware/rk3399/* builds/$(echo $board)/
   fi
+  # End ATF
   make $(echo $board)_defconfig O=builds/$(echo $board)/
   make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" %{?_smp_mflags} V=1 O=builds/$(echo $board)/
-  rk33xx=(evb-rk3399)
-  if [[ " ${rk33xx[*]} " == *" $board "* ]]; then
-    echo "Board: $board using rk33xx"
-    make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" u-boot.itb V=1 O=builds/$(echo $board)/
-    builds/$(echo $board)/tools/mkimage -n rk3399 -T rksd  -d builds/$(echo $board)/spl/u-boot-spl.bin builds/$(echo $board)/spl_sd.img
-    builds/$(echo $board)/tools/mkimage -n rk3399 -T rkspi -d builds/$(echo $board)/spl/u-boot-spl.bin builds/$(echo $board)/spl_spi.img
-  fi
 done
 %endif
 
@@ -182,46 +181,7 @@ do
 done
 %endif
 
-%ifarch aarch64
-for board in $(cat %{_arch}-boards)
-do
-mkdir -p %{buildroot}%{_datadir}/uboot/$(echo $board)/
- for file in MLO SPL spl/arndale-spl.bin spl/origen-spl.bin spl/smdkv310-spl.bin u-boot.bin u-boot.dtb u-boot-dtb-tegra.bin u-boot.img u-boot.imx u-boot-nodtb-tegra.bin u-boot-spl.kwb u-boot-sunxi-with-spl.bin spl_sd.img spl_spi.img
- do
-  if [ -f builds/$(echo $board)/$(echo $file) ]; then
-    install -p -m 0644 builds/$(echo $board)/$(echo $file) %{buildroot}%{_datadir}/uboot/$(echo $board)/
-  fi
- done
-done
-%endif
-
-%ifarch %{arm}
-for board in vexpress_ca15_tc2 vexpress_ca9x4
-do
-mkdir -p %{buildroot}%{_datadir}/uboot/elf/$(echo $board)/
- for file in u-boot
- do
-  if [ -f builds/$(echo $board)/$(echo $file) ]; then
-    install -p -m 0644 builds/$(echo $board)/$(echo $file) %{buildroot}%{_datadir}/uboot/elf/$(echo $board)/
-  fi
- done
-done
-%endif
-
-%ifarch aarch64
-for board in $(cat %{_arch}-boards)
-do
-mkdir -p %{buildroot}%{_datadir}/uboot/elf/$(echo $board)/
- for file in u-boot
- do
-  if [ -f builds/$(echo $board)/$(echo $file) ]; then
-    install -p -m 0644 builds/$(echo $board)/$(echo $file) %{buildroot}%{_datadir}/uboot/elf/$(echo $board)/
-  fi
- done
-done
-%endif
-
-for tool in bmp_logo dumpimage easylogo/easylogo env/fw_printenv fit_check_sign fit_info gdb/gdbcont gdb/gdbsend gen_eth_addr gen_ethaddr_crc img2srec mkenvimage mkimage mksunxiboot ncb proftool sunxi-spl-image-builder ubsha1 xway-swap-bytes
+for tool in bmp_logo dumpimage env/fw_printenv fit_check_sign fit_info gdb/gdbcont gdb/gdbsend gen_eth_addr gen_ethaddr_crc img2srec mkenvimage mkimage mksunxiboot ncb proftool sunxi-spl-image-builder ubsha1 xway-swap-bytes
 do
 install -p -m 0755 builds/tools/$tool %{buildroot}%{_bindir}
 done
@@ -236,7 +196,6 @@ mkdir -p %{buildroot}/lib/kernel/install.d/
 install -p -m 0755 %{SOURCE5} %{buildroot}/lib/kernel/install.d/
 
 mkdir -p builds/docs
-cp -p board/amlogic/odroid-c2/README builds/docs/README.odroid-c2
 cp -p board/hisilicon/hikey/README builds/docs/README.hikey
 cp -p board/hisilicon/hikey/README builds/docs/README.hikey
 cp -p board/Marvell/db-88f6820-gp/README builds/docs/README.mvebu-db-88f6820
@@ -264,32 +223,32 @@ cp -p board/warp7/README builds/docs/README.warp7
 %files -n uboot-images-armv8
 %defattr(-,root,root)
 %{_datadir}/uboot/*
-%exclude %{_datadir}/uboot/elf
 %endif
 
 %ifarch %{arm}
 %files -n uboot-images-armv7
 %defattr(-,root,root)
 %{_datadir}/uboot/*
-%exclude %{_datadir}/uboot/elf
 %endif
 
 %ifarch %{arm} aarch64
 %files -n uboot-images-elf
 %defattr(-,root,root)
-%{_datadir}/uboot/elf/*
 %endif
 
 %files help
-%defattr(-,root,root)
-%doc doc/README.imximage doc/README.kwbimage doc/README.distro
-%doc doc/README.gpt doc/README.odroid doc/README.rockchip doc/README.uefi
-%doc doc/uImage.FIT doc/README.arm64 doc/README.chromium builds/docs/*
-%{_mandir}/man1/mkimage.1.gz
+%doc README doc/README.kwbimage doc/README.distro doc/README.gpt
+%doc doc/README.odroid doc/README.rockchip doc/uefi doc/uImage.FIT
+%doc doc/README.chromium builds/docs/* doc/arch/arm64.rst
+%doc doc/board/amlogic/ doc/board/rockchip/
+%{_mandir}/man1/mkimage.1*
 
 %changelog
-* Wed May 13 2020 songnannan <songnannan2@huawei.com> - 2018.09-9
-- change the python2-libfdt to python3-libfdt in buildrequires
+* Fri Jul 31 2020 chengguipeng<chengguipeng1@huawei.com> 2020.07-1
+- Upgrade to 2020.07-1
+
+* Fri Jun 19 2020 zhujunhao <zhujunhao8@huawei.com> - 2018.09-9
+- drop python2 requires
 
 * Fri Mar 20 2020 songnannan <songnannan2@huawei.com> - 2018.09-8
 - add gdb in buildrequires
@@ -320,4 +279,3 @@ cp -p board/warp7/README builds/docs/README.warp7
 
 * Sat Oct 12 2019 openEuler Buildteam <buildteam@openeuler.org> - 2018.09-3
 - Package init
-
