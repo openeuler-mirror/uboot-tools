@@ -244,7 +244,7 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
-* Tue Sep 10 2020 chengguipeng<chengguipeng1@openeuler.org> - 2020.07-2
+* Tue Sep 10 2020 chengguipeng<chengguipeng1@huawei.com> - 2020.07-2
 - Type:bugfix
 - ID:NA
 - SUG:NA
