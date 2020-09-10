@@ -2,11 +2,11 @@
 
 Name:           uboot-tools
 Version:        2020.07
-Release:        1
+Release:        2
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
-Source0:        ftp://ftp.denx.de/pub/u-boot/u-boot-%{version}%{?candidate:-%{candidate}}.tar.bz2
+Source0:        ftp://ftp.denx.de/pub/u-boot/u-boot-%{version}.tar.bz2
 Source1:        arm-boards
 Source2:        arm-chromebooks
 Source3:        aarch64-boards
@@ -244,6 +244,12 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Tue Sep 10 2020 chengguipeng<chengguipeng1@openeuler.org> - 2020.07-2
+- Type:bugfix
+- ID:NA
+- SUG:NA
+- DESC:modify source0 url
+
 * Fri Jul 31 2020 chengguipeng<chengguipeng1@huawei.com> 2020.07-1
 - Upgrade to 2020.07-1
 
