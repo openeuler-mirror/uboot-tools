@@ -2,7 +2,7 @@
 
 Name:           uboot-tools
 Version:        2020.07
-Release:        2
+Release:        3
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
@@ -30,7 +30,7 @@ Patch0009:      USB-host-support-for-Raspberry-Pi-4-board-64-bit.patch
 Patch0010:      rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel gdb
-BuildRequires:  python-unversioned-command python3-devel python3-setuptools
+BuildRequires:  python3-unversioned-command python3-devel python3-setuptools
 BuildRequires:  python3-libfdt python3-pyelftools SDL-devel swig
 # this required when /usr/bin/python link to python3
 BuildRequires:  python3-devel
@@ -244,6 +244,9 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Wed Oct 21 2020 jinzhimin <jinzhimin2@huawei.com> - 2020.07-3
+- modify buildrequire to python3-unversioned-command 
+
 * Tue Sep 10 2020 chengguipeng<chengguipeng1@huawei.com> - 2020.07-2
 - Type:bugfix
 - ID:NA
