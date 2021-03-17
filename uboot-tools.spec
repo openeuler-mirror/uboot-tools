@@ -2,7 +2,7 @@
 
 Name:           uboot-tools
 Version:        2020.07
-Release:        4
+Release:        5
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
@@ -28,6 +28,11 @@ Patch0008:      rockchip-Pinebook-Pro-Fixes.patch
 # RPi4
 Patch0009:      USB-host-support-for-Raspberry-Pi-4-board-64-bit.patch
 Patch0010:      rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
+Patch0011:	backport-0001-CVE-2021-27097.patch
+Patch0012:	backport-0002-CVE-2021-27097.patch
+Patch0013:	backport-0003-CVE-2021-27097.patch
+Patch0014:	backport-0001-CVE-2021-27138.patch
+Patch0015:	backport-0002-CVE-2021-27138.patch
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel gdb
 BuildRequires:  python3-unversioned-command python3-devel python3-setuptools
@@ -244,6 +249,12 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Tue Mar 16 2021 yanglu <yanglu@60huawei.com> - 2020.07-5
+- Type:cves
+- ID:CVE-2021-27097 CVE-2021-27138
+- SUG:NA
+- DESC:fix CVE-2021-27097CVE-2021-27138
+
 * Wed Dec 16 2020 zhanzhimin <zhanzhimin@huawei.com> - 2020.07-4
 - Update Source0
 
