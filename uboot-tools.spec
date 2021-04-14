@@ -1,8 +1,9 @@
 %global _default_patch_fuzz 2
+%global with_armv8 1
 
 Name:           uboot-tools
 Version:        2020.07
-Release:        3
+Release:        4
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
@@ -39,24 +40,23 @@ BuildRequires:  python-unversioned-command python3-devel python3-setuptools
 BuildRequires:  python3-libfdt python3-pyelftools SDL-devel swig
 # this required when /usr/bin/python link to python3
 BuildRequires:  python3-devel
+%if %{with_armv8}
 %ifarch %{arm}  aarch64
 BuildRequires:  vboot-utils
 %endif
 %ifarch aarch64
 BuildRequires:  arm-trusted-firmware-armv8
 %endif
+%endif
 
 Requires:       dtc systemd
-%ifarch aarch64 %{arm}
-Obsoletes:      uboot-images-elf < 2019.07
-Provides:       uboot-images-elf >= 2019.07
-%endif
 
 %description
 This package includes the mkimage program, which allows generation of U-Boot
 images in various formats, and the fw_printenv and fw_setenv programs to read
 and modify U-Boot's environment.
 
+%if %{with_armv8}
 %ifarch aarch64
 %package     	-n uboot-images-armv8
 Summary:     	u-boot bootloader images for aarch64 boards
@@ -87,6 +87,7 @@ Provides:    	uboot-images-qemu = %{version}-%{release}
 %description 	-n uboot-images-elf
 u-boot bootloader ELF images for use with qemu and other platforms
 %endif
+%endif
 
 %package_help
 
@@ -98,6 +99,7 @@ cp %SOURCE1 %SOURCE2 %SOURCE3 %SOURCE4 .
 %build
 mkdir builds
 
+%if %{with_armv8}
 %ifarch aarch64 %{arm}
 for board in $(cat %{_arch}-boards)
 do
@@ -133,9 +135,10 @@ do
   make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" %{?_smp_mflags} V=1 O=builds/$(echo $board)/
 done
 %endif
+%endif
 
-make HOSTCC="gcc $RPM_OPT_FLAGS" %{?_smp_mflags} CROSS_COMPILE="" defconfig V=1 O=builds/
-make HOSTCC="gcc $RPM_OPT_FLAGS" %{?_smp_mflags} CROSS_COMPILE="" tools-all V=1 O=builds/
+make HOSTCC="gcc $RPM_OPT_FLAGS" %{?_smp_mflags} CROSS_COMPILE="" defconfig V=1 O=builds/ -j16
+make HOSTCC="gcc $RPM_OPT_FLAGS" %{?_smp_mflags} CROSS_COMPILE="" tools-all V=1 O=builds/ -j16
 
 %install
 mkdir -p %{buildroot}%{_bindir}
@@ -143,6 +146,7 @@ mkdir -p %{buildroot}%{_sysconfdir}
 mkdir -p %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_datadir}/uboot/
 
+%if %{with_armv8}
 %ifarch aarch64
 for board in $(cat %{_arch}-boards)
 do
@@ -185,6 +189,7 @@ do
   fi
 done
 %endif
+%endif
 
 for tool in bmp_logo dumpimage env/fw_printenv fit_check_sign fit_info gdb/gdbcont gdb/gdbsend gen_eth_addr gen_ethaddr_crc img2srec mkenvimage mkimage mksunxiboot ncb proftool sunxi-spl-image-builder ubsha1 xway-swap-bytes
 do
@@ -224,6 +229,7 @@ cp -p board/warp7/README builds/docs/README.warp7
 %dir %{_datadir}/uboot/
 %config(noreplace) %{_sysconfdir}/fw_env.config
 
+%if %{with_armv8}
 %ifarch aarch64
 %files -n uboot-images-armv8
 %defattr(-,root,root)
@@ -240,6 +246,7 @@ cp -p board/warp7/README builds/docs/README.warp7
 %files -n uboot-images-elf
 %defattr(-,root,root)
 %endif
+%endif
 
 %files help
 %doc README doc/README.kwbimage doc/README.distro doc/README.gpt
@@ -249,6 +256,9 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Mon Apr 19 2021 liuyumeng <liuyumeng@huawei.com> - 2020.07-4
+- Compilation optimization
+
 * Tue Mar 16 2021 yanglu <yanglu60@huawei.com> - 2020.07-3
 - Type:cves
 - ID:CVE-2021-27097 CVE-2021-27138
