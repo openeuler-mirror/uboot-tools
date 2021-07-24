@@ -3,7 +3,7 @@
 
 Name:           uboot-tools
 Version:        2020.07
-Release:        6
+Release:        7
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
@@ -35,7 +35,7 @@ Patch0013:	backport-0003-CVE-2021-27097.patch
 Patch0014:	backport-0001-CVE-2021-27138.patch
 Patch0015:	backport-0002-CVE-2021-27138.patch
 
-BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel gdb
+BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel
 BuildRequires:  python3-unversioned-command python3-devel python3-setuptools
 BuildRequires:  python3-libfdt python3-pyelftools SDL-devel swig
 # this required when /usr/bin/python link to python3
@@ -256,6 +256,9 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Wed Jul 21 2021 yushaogui <yushaogui@huawei.com> - 2020.07-7
+- Delete a Buildrequires for gdb
+
 * Mon Apr 19 2021 liuyumeng <liuyumeng@huawei.com> - 2020.07-6
 - Compilation optimzation
 
