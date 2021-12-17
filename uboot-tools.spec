@@ -2,8 +2,8 @@
 %global with_armv8 1
 
 Name:           uboot-tools
-Version:        2020.07
-Release:        7
+Version:        2021.10
+Release:        1
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
@@ -14,26 +14,11 @@ Source3:        aarch64-boards
 Source4:        aarch64-chromebooks
 Source5:        10-devicetree.install
 
-Patch0001:      uefi-distro-load-FDT-from-any-partition-on-boot-device.patch
-# Board fixes and enablement
-Patch0002:      usb-kbd-fixes.patch
-Patch0003:      dragonboard-fixes.patch
-# Tegra improvements
-Patch0004:      arm-tegra-define-fdtfile-option-for-distro-boot.patch
-Patch0005:      arm-add-BOOTENV_EFI_SET_FDTFILE_FALLBACK-for-tegra186-be.patch
-# AllWinner improvements
-Patch0006:      AllWinner-Pine64-bits.patch
-# Rockchips improvements
-Patch0007:      arm-rk3399-enable-rng-on-rock960-and-firefly3399.patch
-Patch0008:      rockchip-Pinebook-Pro-Fixes.patch
-# RPi4
-Patch0009:      USB-host-support-for-Raspberry-Pi-4-board-64-bit.patch
-Patch0010:      rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
-Patch0011:	backport-0001-CVE-2021-27097.patch
-Patch0012:	backport-0002-CVE-2021-27097.patch
-Patch0013:	backport-0003-CVE-2021-27097.patch
-Patch0014:	backport-0001-CVE-2021-27138.patch
-Patch0015:	backport-0002-CVE-2021-27138.patch
+Patch6000:      backport-uefi-distro-load-FDT-from-any-partition-on-boot-device.patch
+# RPi4llWinner improvements
+Patch6001:      backport-AllWinner-PineTab.patch
+# RPI4
+Patch6002:      backport-rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel
 BuildRequires:  python3-unversioned-command python3-devel python3-setuptools
@@ -250,12 +235,15 @@ cp -p board/warp7/README builds/docs/README.warp7
 
 %files help
 %doc README doc/README.kwbimage doc/README.distro doc/README.gpt
-%doc doc/README.odroid doc/README.rockchip doc/uefi doc/uImage.FIT
-%doc doc/README.chromium builds/docs/* doc/arch/arm64.rst
+%doc doc/README.odroid doc/README.rockchip doc/uImage.FIT
+%doc builds/docs/* doc/arch/arm64.rst
 %doc doc/board/amlogic/ doc/board/rockchip/
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Mon Dec 6 2021 yangcheng <yangcheng87@huawei.com> - 2021.10-1
+- Upgrade to 2021.10
+
 * Wed Jul 21 2021 yushaogui <yushaogui@huawei.com> - 2020.07-7
 - Delete a Buildrequires for gdb
 
