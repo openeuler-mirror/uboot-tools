@@ -3,7 +3,7 @@
 
 Name:           uboot-tools
 Version:        2021.10
-Release:        1
+Release:        2
 Summary:        tools for U-Boot
 License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
 URL:            http://www.denx.de/wiki/U-Boot
@@ -23,6 +23,7 @@ Patch6002:      backport-rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.pa
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel
 BuildRequires:  python3-unversioned-command python3-devel python3-setuptools
 BuildRequires:  python3-libfdt python3-pyelftools SDL-devel swig
+BuildRequires:  perl
 # this required when /usr/bin/python link to python3
 BuildRequires:  python3-devel
 %if %{with_armv8}
@@ -241,6 +242,9 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Wed Apr 13 2022 yangcheng <yangcheng87@h-partners.com> - 2021.10-2
+- Add perl buildrequires to resolve compilation error
+
 * Mon Dec 6 2021 yangcheng <yangcheng87@huawei.com> - 2021.10-1
 - Upgrade to 2021.10
 
