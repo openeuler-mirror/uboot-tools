@@ -3,9 +3,9 @@
 
 Name:           uboot-tools
 Version:        2020.07
-Release:        4
+Release:        5
 Summary:        tools for U-Boot
-License:        GPLv2+ BSD LGPL-2.1+ LGPL-2.0+
+License:        GPL-2.0-or-later and Public Domain and GPL-2.0-only
 URL:            http://www.denx.de/wiki/U-Boot
 Source0:        https://ftp.denx.de/pub/u-boot/u-boot-%{version}.tar.bz2
 Source1:        arm-boards
@@ -256,6 +256,9 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Fri May 13 2022 liuyumeng <liuyumeng5@h-partners.com> -2020.07-5
+- fix license error
+
 * Mon Apr 19 2021 liuyumeng<liuyumeng@huawei.com> - 2020.07.-4
 - Compilation optimization
 
