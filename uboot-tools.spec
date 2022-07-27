@@ -3,7 +3,7 @@
 
 Name:           uboot-tools
 Version:        2021.10
-Release:        3
+Release:        4
 Summary:        tools for U-Boot
 License:        GPL-2.0-or-later and Public Domain and GPL-2.0-only
 URL:            http://www.denx.de/wiki/U-Boot
@@ -20,6 +20,7 @@ Patch6001:      backport-AllWinner-PineTab.patch
 # RPI4
 Patch6002:      backport-rpi-Enable-using-the-DT-provided-by-the-Raspberry-Pi.patch
 Patch6003:	backport-CVE-2022-34835.patch
+Patch6004:	backport-CVE-2022-33967.patch
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel
 BuildRequires:  python3-unversioned-command python3-devel python3-setuptools
@@ -242,7 +243,10 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
-* Tue Jul 12 2022 zhouwenpei <zhouwnepei1@h-partners.com> - 2021-10-3
+* Tue Jul 26 2022 zhouwenpei <zhouwenpei1@h-partners.com> - 2021-10-4
+- fix CVE-2022-33967
+
+* Tue Jul 12 2022 zhouwenpei <zhouwenpei1@h-partners.com> - 2021-10-3
 - fix CVE-2022-34835
 
 * Wed May 11 2022 liuyumeng <liuyumeng5@h-partners.com> - 2021-10-2
