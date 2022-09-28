@@ -3,7 +3,7 @@
 
 Name:           uboot-tools
 Version:        2020.07
-Release:        6
+Release:        7
 Summary:        tools for U-Boot
 License:        GPL-2.0-or-later and Public Domain and GPL-2.0-only
 URL:            http://www.denx.de/wiki/U-Boot
@@ -35,6 +35,7 @@ Patch0013:      backport-0003-CVE-2021-27097.patch
 Patch0014:      backport-0001-CVE-2021-27138.patch
 Patch0015:      backport-0002-CVE-2021-27138.patch
 Patch0016:	backport-CVE-2022-34835.patch
+Patch0017:	backport-CVE-2022-30767.patch
 
 BuildRequires:  bc dtc gcc make flex bison git-core openssl-devel gdb
 BuildRequires:  python-unversioned-command python3-devel python3-setuptools
@@ -257,6 +258,9 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Wed Sep 28 2022 zhouwenpei <zhouwenpei1@h-partners.com> -2020.07-7
+- fix CVE-2022-30767
+
 * Tue Jul 12 2022 zhouwenpei <zhouwenpei1@h-partners.com> -2020.07-6
 - fix CVE-2022-34835
 
