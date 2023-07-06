@@ -3,7 +3,7 @@
 
 Name:           uboot-tools
 Version:        2021.10
-Release:        7
+Release:        8
 Summary:        tools for U-Boot
 License:        GPL-2.0-or-later and Public Domain and GPL-2.0-only
 URL:            http://www.denx.de/wiki/U-Boot
@@ -121,13 +121,13 @@ do
   fi
   # End ATF
   make $(echo $board)_defconfig O=builds/$(echo $board)/
-  make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" %{?_smp_mflags} V=1 O=builds/$(echo $board)/
+  make HOSTCC="%toolchain $RPM_OPT_FLAGS" CROSS_COMPILE="" %{?_smp_mflags} V=1 O=builds/$(echo $board)/
 done
 %endif
 %endif
 
-make HOSTCC="gcc $RPM_OPT_FLAGS" %{?_smp_mflags} CROSS_COMPILE="" defconfig V=1 O=builds/ -j16
-make HOSTCC="gcc $RPM_OPT_FLAGS" %{?_smp_mflags} CROSS_COMPILE="" tools-all V=1 O=builds/ -j16
+make HOSTCC="%toolchain $RPM_OPT_FLAGS" %{?_smp_mflags} CROSS_COMPILE="" defconfig V=1 O=builds/ -j16
+make HOSTCC="%toolchain $RPM_OPT_FLAGS" %{?_smp_mflags} CROSS_COMPILE="" tools-all V=1 O=builds/ -j16
 
 %install
 mkdir -p %{buildroot}%{_bindir}
@@ -245,6 +245,9 @@ cp -p board/warp7/README builds/docs/README.warp7
 %{_mandir}/man1/mkimage.1*
 
 %changelog
+* Mon Jun 05 2023 Xiaoya Huang <huangxiaoya@iscas.ac.cn> - 2021.10-8
+- Correct the incorrect CC compiler specified in the spec file
+
 * Wed Sep 28 2022 zhouwenpei <zhouwenpei1@h-partners.com> - 2021.10-7
 - fix CVE-2022-30767
 
